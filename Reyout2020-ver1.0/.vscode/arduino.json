@@ -1,5 +1,7 @@
 {
     "board": "arduino:avr:nano",
     "configuration": "cpu=atmega328old",
-    "programmer": "AVR ISP"
+    "programmer": "AVR ISP",
+    "sketch": "Reyout2020-ver1.0.ino",
+    "port": "/dev/cu.usbmodem6363311"
 }
