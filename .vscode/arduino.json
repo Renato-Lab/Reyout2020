@@ -1,6 +1,0 @@
-{
-    "board": "arduino:avr:nano",
-    "configuration": "cpu=atmega328old",
-    "programmer": "AVR ISP",
-    "sketch": "Reyout2020-ver1.0/main/main.ino"
-}
