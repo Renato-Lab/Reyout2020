@@ -17,4 +17,5 @@ void setup()
 void loop()
 {
   Serial.println(get_tof("front"));
+  motor_set(100,0,0);
 }
