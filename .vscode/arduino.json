@@ -1,4 +1,7 @@
 {
     "board": "arduino:avr:nano",
-    "configuration": "cpu=atmega328old"
+    "configuration": "cpu=atmega328old",
+    "programmer": "AVR ISP",
+    "sketch": "main.ino",
+    "port": "/dev/cu.usbmodem6363311"
 }
