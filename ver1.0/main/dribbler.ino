@@ -1,6 +1,3 @@
-//#include <Servo.h>
-//Servo escF;
-//Servo escB;
 
 void esc_setup()
 {
