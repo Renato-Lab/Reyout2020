@@ -17,13 +17,10 @@ VL53L1X sensor;
 
 void setup()
 {
-    pinMode(M1_dir,OUTPUT);
-    pinMode(M2_dir,OUTPUT);
-    pinMode(M3_dir,OUTPUT);
-    pinMode(M4_dir,OUTPUT);
+
 }
 
 void loop()
 {
-    motor_set(50,0,0);
+
 }
