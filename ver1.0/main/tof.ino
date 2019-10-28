@@ -14,8 +14,6 @@ void tof_setup()
     digitalWrite(XSHUT[i], LOW);
   }
 
-  Serial.println("Success!");
-
   for (int i = 0; i < SENSOR_NUM; i++) {
 
     pinMode(XSHUT[i], INPUT);// センサを初期化
@@ -35,8 +33,6 @@ void tof_setup()
       Serial.println(" error");
     }
   }
-
-  Serial.print("Success!!");
 }
 
 int get_distance_VL53L1X(int tof_pos)
