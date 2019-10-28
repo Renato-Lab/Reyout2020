@@ -18,5 +18,12 @@ void setup()
 
 void loop()
 {
-  get_tof();
+  Serial.print(get_distance_VL53L1X(1));
+  Serial.print("\t");
+  Serial.print(get_distance_VL53L1X(2));
+  Serial.print("\t");
+  Serial.print(get_distance_VL53L1X(3));
+  Serial.print("\t");
+  Serial.print(get_distance_VL53L1X(4));
+  Serial.println("\t");
 }

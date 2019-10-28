@@ -24,7 +24,7 @@ void tof_setup()
       tof[i].setTimeout(500);
       tof[i].setDistanceMode(VL53L1X::Long);
       tof[i].setMeasurementTimingBudget(50000);
-      tof[i].startContinuous(50);
+      tof[i].startContinuous(5);
       int address = ADDRESS_00 + (i * 2);
       tof[i].setAddress(address);
     }
@@ -39,24 +39,25 @@ void tof_setup()
   Serial.print("Success!!");
 }
 
-void get_tof()
+int get_distance_VL53L1X(int tof_pos)
 {
-  Serial.println(tof[1].read());
-  if(tof[0].timeoutOccurred())
+  int distance = 0;
+
+  if(tof_pos == 1)
   {
-    Serial.println("TIMEOUT");
+    distance = tof[0].read();
+    return distance;
+  }else if(tof_pos == 2)
+  {
+    distance = tof[1].read();
+    return distance;
+  }else if(tof_pos == 3)
+  {
+    distance = tof[2].read();
+    return distance;
+  }else if(tof_pos == 4)
+  {
+    distance = tof[3].read();
+    return distance;
   }
-  /*if(tof_pos == "front")
-  {
-    return tof[0].read();
-  }else if(tof_pos == "right")
-  {
-    return tof[1].read();
-  }else if(tof_pos == "back")
-  {
-    return tof[2].read();
-  }else if(tof_pos == "left")
-  {
-    return tof[3].read();
-  }*/
 }
