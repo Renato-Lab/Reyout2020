@@ -1,6 +1,9 @@
 #include <Servo.h>
 #include <Wire.h>
 #include <VL53L1X.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BNO055.h>
+#include <utility/imumaths.h>
 
 Servo escF;
 Servo escB;
