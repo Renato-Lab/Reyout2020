@@ -17,16 +17,18 @@ void setup()
   motor_pin_define();
   tof_setup();
   //esc_setup();
+  bno055_setup();
 }
 
 void loop()
 {
-  Serial.print(get_distance_VL53L1X(1));
+  /*Serial.print(get_distance_VL53L1X(1));
   Serial.print("\t");
   Serial.print(get_distance_VL53L1X(2));
   Serial.print("\t");
   Serial.print(get_distance_VL53L1X(3));
   Serial.print("\t");
   Serial.print(get_distance_VL53L1X(4));
-  Serial.println("\t");
+  Serial.println("\t");*/
+  Serial.println(get_bno055_yaw());
 }
