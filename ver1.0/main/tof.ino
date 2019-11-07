@@ -22,7 +22,7 @@ void tof_setup()
       tof[i].setTimeout(500);
       tof[i].setDistanceMode(VL53L1X::Long);
       tof[i].setMeasurementTimingBudget(50000);
-      tof[i].startContinuous(5);
+      tof[i].startContinuous(10);
       int address = ADDRESS_00 + (i * 2);
       tof[i].setAddress(address);
     }
