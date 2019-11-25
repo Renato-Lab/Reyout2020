@@ -22,10 +22,10 @@ void motor_pin_define()
   #define M2_pwm 3
   #define M3_pwm 4
   #define M4_pwm 5
-  #define M1_dir 6
-  #define M2_dir 7
-  #define M3_dir 8
-  #define M4_dir 9
+  #define M1_dir 30
+  #define M2_dir 31
+  #define M3_dir 32
+  #define M4_dir 33
 
   pinMode(M1_dir, OUTPUT);
   pinMode(M2_dir, OUTPUT);

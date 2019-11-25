@@ -9,6 +9,9 @@
 Servo escF;
 Servo escB;
 
+#define HOLD_F A8
+#define FOLD_B A9
+
 void setup()
 {
   Serial.begin(115200);
@@ -28,5 +31,5 @@ void setup()
 
 void loop()
 {
-  Serial.print(get_adc(1,0));
+  motor_set(50,0,0);
 }
