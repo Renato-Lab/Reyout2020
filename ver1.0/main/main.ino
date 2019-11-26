@@ -9,12 +9,13 @@
 Servo escF;
 Servo escB;
 
-#define HOLD_F A8
-#define FOLD_B A9
+#define HOLD_F 22
+#define FOLD_B 23
 
 void setup()
 {
   Serial.begin(115200);
+  Serial1.begin(115200);
   Wire.begin();
   Wire1.begin();
   Wire2.begin();
@@ -23,13 +24,16 @@ void setup()
   Wire2.setClock(400000); // use 400 kHz I2C
 
   motor_pin_define();
-  adc_setup();
-  tof_setup();
-  bno055_setup();
+  //adc_setup();
+  //tof_setup();
+  //bno055_setup();
   
 }
 
 void loop()
 {
-  motor_set(50,0,0);
+  /*int val = analogRead(HOLD_F);
+  Serial.println(val);*/
+
+  get_camera_data();
 }

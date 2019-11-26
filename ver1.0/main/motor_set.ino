@@ -35,10 +35,10 @@ void motor_pin_define()
 
 void motor_set(int power, float move_dir, float initial_dir)
 {
-  float M1_power = (sin(move_dir - 45) * PI / 180 + initial_dir) * power;
-  float M2_power = (sin(move_dir - 135) * PI / 180 + initial_dir) * power;
-  float M3_power = (sin(move_dir - 225) * PI / 180 + initial_dir) * power;
-  float M4_power = (sin(move_dir - 315) * PI / 180 + initial_dir) * power;
+  float M1_power = sin((move_dir - 45) * PI / 180) * power;
+  float M2_power = sin((move_dir - 135) * PI / 180) * power;
+  float M3_power = sin((move_dir - 225) * PI / 180) * power;
+  float M4_power = sin((move_dir - 315) * PI / 180) * power;
 
   //M1-------------------------------------------------
   if (M1_power > 0) {
@@ -84,4 +84,12 @@ void motor_set(int power, float move_dir, float initial_dir)
     digitalWrite(M4_dir, LOW);
     analogWrite(M4_pwm, 0);
   }
+  Serial.print(M1_power);
+  Serial.print("\t");
+  Serial.print(M2_power);
+  Serial.print("\t");
+  Serial.print(M3_power);
+  Serial.print("\t");
+  Serial.print(M4_power);
+  Serial.println("\t");
 }
