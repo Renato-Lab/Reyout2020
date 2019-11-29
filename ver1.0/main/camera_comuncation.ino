@@ -1,6 +1,6 @@
-int ballX,ballY,highByte_ballX,lowByte_ballX,highByte_ballY,lowByte_ballY;
-int blueGoalX,blueGoalY,highByte_blueGoalX,lowByte_blueGoalX,highByte_blueGoalY,lowByte_blueGoalY;
-int yellowGoalX,yellowGoalY,highByte_yellowGoalX,lowByte_yellowGoalX,highByte_yellowGoalY,lowByte_yellowGoalY;
+//int ballX,ballY,highByte_ballX,lowByte_ballX,highByte_ballY,lowByte_ballY;
+//int blueGoalX,blueGoalY,highByte_blueGoalX,lowByte_blueGoalX,highByte_blueGoalY,lowByte_blueGoalY;
+//int yellowGoalX,yellowGoalY,highByte_yellowGoalX,lowByte_yellowGoalX,highByte_yellowGoalY,lowByte_yellowGoalY;
 
 void get_camera_data()
 {
@@ -26,9 +26,10 @@ void get_camera_data()
       blueGoalY = (highByte_blueGoalY << 7) + lowByte_blueGoalY;
       yellowGoalX = (highByte_yellowGoalX << 7) + lowByte_yellowGoalX;
       yellowGoalY = (highByte_yellowGoalY << 7) + lowByte_yellowGoalY;
-
-      Serial.println(ballX);
-      
+      Serial.print(ballX);
+      Serial.print("\t");
+      Serial.print(ballY);
+      Serial.println("\t");
     }
   }
 }

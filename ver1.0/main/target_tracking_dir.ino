@@ -1,4 +1,4 @@
-float target_tracking_dir(float main_X, float main_Y, float sub_X, float sub_Y)
+float target_tracking_dir(float X, float Y)
 {
     float a = 28.59776;
     float b = 1.41069;
@@ -6,9 +6,9 @@ float target_tracking_dir(float main_X, float main_Y, float sub_X, float sub_Y)
     float d = -0.00139;
     float e = -0.00138;
     float f = 0.00578;
-    float main_distance = sqrt(main_X * main_X + main_Y * main_Y);
-    float dir = atan2(main_X + sub_X, main_Y + sub_Y);
-    float move_dir = a + (b * main_distance) + (c * dir) + (d * main_distance * main_distance) + (e * main_distance * dir) + (f * dir * dir);
+    float distance = sqrt(X * X + Y * Y);
+    float dir = atan2(X, Y);
+    float move_dir = a + (b * distance) + (c * dir) + (d * distance * distance) + (e * distance * dir) + (f * dir * dir);
     return move_dir;
 }
 
