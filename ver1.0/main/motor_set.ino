@@ -45,12 +45,25 @@ void motor_set(int power, float move_dir, float initial_dir)
     move_dir = move_dir + 360;
   }
 
-  Serial.println(move_dir);
+  power = map(power,0,100,0,255);
 
-  float M1_power = sin((move_dir - 45) * PI / 180) * power;
-  float M2_power = sin((move_dir - 135) * PI / 180) * power;
-  float M3_power = sin((move_dir - 225) * PI / 180) * power;
-  float M4_power = sin((move_dir - 315) * PI / 180) * power;
+  float yaw = get_bno055_yaw();
+  yaw = yaw * 0.006;
+  //Serial.println(yaw);
+
+  float M1_power = (sin((move_dir - 45) * PI / 180) - yaw);
+  float M2_power = (sin((move_dir - 135) * PI / 180) - yaw);
+  float M3_power = (sin((move_dir - 225) * PI / 180) - yaw);
+  float M4_power = (sin((move_dir - 315) * PI / 180) - yaw);
+
+  float prepreMax =max(M1_power,M2_power);
+  float preMax = max(prepreMax,M3_power);
+  float Max = max(preMax,M4_power);
+
+  M1_power = M1_power * power/Max;
+  M2_power = M2_power * power/Max;
+  M3_power = M3_power * power/Max;
+  M4_power = M4_power * power/Max;
 
   //M1-------------------------------------------------
   if (M1_power > 0) {

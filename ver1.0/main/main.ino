@@ -9,12 +9,19 @@
 Servo escF;
 Servo escB;
 
-#define HOLD_F 22
-#define FOLD_B 23
+bool isGAME_START = false; 
 
-int ballX,ballY,highByte_ballX,lowByte_ballX,highByte_ballY,lowByte_ballY;
-int blueGoalX,blueGoalY,highByte_blueGoalX,lowByte_blueGoalX,highByte_blueGoalY,lowByte_blueGoalY;
-int yellowGoalX,yellowGoalY,highByte_yellowGoalX,lowByte_yellowGoalX,highByte_yellowGoalY,lowByte_yellowGoalY;
+#define HOLD_F 22
+#define HOLD_B 23
+bool isHOLD_F;
+bool isHOLD_B;
+
+bool isBLUE_GOAl = true;
+bool isYELLOW_GOAL = false;
+
+int ballX,ballY,ballQty,highByte_ballX,lowByte_ballX,highByte_ballY,lowByte_ballY,highByte_qty_ball,lowByte_qty_ball;
+int blueGoalX,blueGoalY,blueGoalQty,highByte_blueGoalX,lowByte_blueGoalX,highByte_blueGoalY,lowByte_blueGoalY,highByte_qty_blue_goal,lowByte_qty_blue_goal;
+int yellowGoalX,yellowGoalY,yellowGoalQty,highByte_yellowGoalX,lowByte_yellowGoalX,highByte_yellowGoalY,lowByte_yellowGoalY,highByte_qty_yellow_goal,lowByte_qty_yellow_goal;
 float fixedBallX, fixedBallY, fixedBlueGoalX,fixedBlueGoalY,fixedYellowGoalX, fixedYellowGoalY, fixedDistance,move_dir;
 #define CENTER_CAMERA_X 160
 #define CENTER_CAMERA_Y 120
@@ -26,78 +33,53 @@ float d = -0.00139;
 float e = -0.00138;
 float f = 0.00578;
 
+int motorPower = 70;
+
 void setup()
 {
   Serial.begin(115200);
   Serial1.begin(115200);
   Wire.begin();
-  Wire1.begin();
-  Wire2.begin();
   Wire.setClock(400000); // use 400 kHz I2C
-  Wire1.setClock(400000); // use 400 kHz I2C
-  Wire2.setClock(400000); // use 400 kHz I2C
 
-  
+  pinMode(6,INPUT);
+  pinMode(13,INPUT);
 
   motor_pin_define();
-  //adc_setup();
+  esc_setup();
   //tof_setup();
   //bno055_setup();
   
 }
 
-void loop()
-{
-  if (Serial1.available() >= 13) {
-    int head = Serial1.read();
-    if (head == 128) {
-      highByte_ballX = Serial1.read();
-      lowByte_ballX = Serial1.read();
-      highByte_ballY = Serial1.read();
-      lowByte_ballY = Serial1.read();
-      highByte_blueGoalX = Serial1.read();
-      lowByte_blueGoalX = Serial1.read();
-      highByte_blueGoalY = Serial1.read();
-      lowByte_blueGoalY = Serial1.read();
-      highByte_yellowGoalX = Serial1.read();
-      lowByte_yellowGoalX = Serial1.read();
-      highByte_yellowGoalY = Serial1.read();
-      lowByte_yellowGoalY = Serial1.read();
-      
-      ballX = (highByte_ballX << 7) + lowByte_ballX;
-      ballY = (highByte_ballY << 7) + lowByte_ballY;
-      blueGoalX = (highByte_blueGoalX << 7) + lowByte_blueGoalX;
-      blueGoalY = (highByte_blueGoalY << 7) + lowByte_blueGoalY;
-      yellowGoalX = (highByte_yellowGoalX << 7) + lowByte_yellowGoalX;
-      yellowGoalY = (highByte_yellowGoalY << 7) + lowByte_yellowGoalY;
-      //Serial.println(ballX);
+void loop(){
+  
+  //get_camera_data();
+  //check_hold();
 
-      fixedBallX = ballY - CENTER_CAMERA_Y;
-      fixedBallY = ballX - CENTER_CAMERA_X;
-      float dis = sqrt(fixedBallX * fixedBallX + fixedBallY * fixedBallY);
-      fixedDistance = 0.01638*(dis*dis) - 1.2726*dis + 34.105;
-      float dir = atan2(fixedBallX,fixedBallY);
-      dir = dir * 180/PI;
+  //print_camera_data();
+  //float dis = sqrt(fixedBallX * fixedBallX + fixedBallY * fixedBallY);
+  //fixedDistance = 0.01638*(dis*dis) - 1.2726*dis + 34.105;
+  //float dir = atan2(fixedBallX,fixedBallY);
+  //dir = dir * 180/PI;
 
-      if (dir < -20) {
-        move_dir = -(a + b * abs(dir) + c * abs(fixedDistance) + d * (dir * dir) + e * abs(dir) * abs(fixedDistance) + f * (fixedDistance * fixedDistance));
-        //Serial.println(move_dir);
-        //move_dir = -(a + (b * abs(fixedDistance)) + (c * abs(dir)) + (d * abs(fixedDistance) * abs(fixedDistance)) + (e * abs(fixedDistance) * abs(dir)) + (f * abs(dir) * abs(dir)));
-      } else if (dir > 20) {
-        move_dir = a + b * abs(dir) + c * abs(fixedDistance) + d * (dir * dir) + e * abs(dir) * abs(fixedDistance) + f * (fixedDistance * fixedDistance);
-        //Serial.println(move_dir);
-        //move_dir = a + (b * abs(fixedDistance)) + (c * abs(dir)) + (d * abs(fixedDistance) * abs(fixedDistance)) + (e * abs(fixedDistance) * abs(dir)) + (f * abs(dir) * abs(dir));
-      }else{
-        move_dir = dir;
-        //Serial.println(move_dir);
-      }
-      motor_set(200,move_dir,0);
-
-
-      //Serial.print(fixedDistance);
-      //Serial.print("\t");
-      //Serial.print(dir);
-      //Serial.println("\t");
-    }
+  if(digitalRead(6) == HIGH){
+    Serial.println("HIGH");
+    /*if (ballX == 0 && ballY == 0){
+      motor_set(0,0,0);
+    }else if(isHOLD_F == true && isBLUE_GOAl == true){//青ゴール攻め、前でホールド
+      motor_set(motorPower,ball_tracking_dir(fixedBlueGoalX,fixedBlueGoalY),0);
+    }else if(isHOLD_F == true && isYELLOW_GOAL == true){//黄ゴール攻め、前でホールド
+      motor_set(motorPower,ball_tracking_dir(fixedYellowGoalX,fixedYellowGoalY),0);
+    }else if(isHOLD_B == true && isBLUE_GOAl == true){//青ゴール攻め、後ろでホールド
+      //makao-shot
+    }else if(isHOLD_B == true && isYELLOW_GOAL == true){//黄ゴール攻め、後ろでホールド
+      //makao-shoot
+    }else{
+      motor_set(motorPower,ball_tracking_dir(fixedBallX,fixedBallY),0);
+    }*/
+  }else if (digitalRead(6) == LOW){
+    //motor_set(0,0,0);
+    Serial.println("LOW");
   }
 }

@@ -1,4 +1,4 @@
-float target_tracking_dir(float X, float Y)
+float ball_tracking_dir(float X,float Y)
 {
     float a = 28.59776;
     float b = 1.41069;
@@ -6,11 +6,41 @@ float target_tracking_dir(float X, float Y)
     float d = -0.00139;
     float e = -0.00138;
     float f = 0.00578;
-    float distance = sqrt(X * X + Y * Y);
-    float dir = atan2(X, Y);
-    float move_dir = a + (b * distance) + (c * dir) + (d * distance * distance) + (e * distance * dir) + (f * dir * dir);
+
+    float dis = sqrt(X * X + Y * Y);
+    dis = 0.01638*(dis*dis) - 1.2726*dis + 34.105;
+    float dir = atan2(X,Y);
+    dir = dir * 180/PI;
+
+    if (dir < -20) {
+        move_dir = -(a + b * abs(dir) + c * abs(dis) + d * (dir * dir) + e * abs(dir) * abs(dis) + f * (dis * dis));
+        escF.write(0);
+    } else if (dir > 20) {
+        move_dir = a + b * abs(dir) + c * abs(dis) + d * (dir * dir) + e * abs(dir) * abs(dis) + f * (dis * dis);
+        escF.write(0);
+    }else{
+        move_dir = dir;
+        escF.write(1800);
+    }
     return move_dir;
 }
+
+void check_hold(){
+    if(analogRead(HOLD_F) < 15){
+        isHOLD_F = true;
+    }else{
+        isHOLD_F = false;
+    }
+
+    if(analogRead(HOLD_B) < 15){
+        isHOLD_B = true;
+    }else{
+        isHOLD_B = false;
+    }
+}
+
+
+
 
 //30  y=-20000000x^5 + 700000x^4 - 0.008x^3 + 0.4593x^2 -12.625x + 162.33 
 //40  y=4000000x^4 - 0.001x^3 + 0.1019x^2 - 4.4784x + 113.25

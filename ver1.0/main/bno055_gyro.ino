@@ -14,6 +14,7 @@ void bno055_setup()
     }
 
     bno.setExtCrystalUse(true);
+    Serial.print("bno055 setup success!!");
 }
 
 
