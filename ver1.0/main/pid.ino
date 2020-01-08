@@ -1,17 +1,13 @@
-double Setpoint, Input, Output;
-float pidOutput;
-double Kp=0, Ki=0, Kd=0;
-PID myPID(&Input, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);
 
-void pid_setup()
-{
-    Setpoint = 0;
-    myPID.SetMode(AUTOMATIC);
+float calc_pid(float target, float kp, float ki, float kd){
+    float preTime, dt, gap, I, D, preGap, duty;
+    dt = (micros() - preTime) / 1000000;
+    preTime = micros();
+
+    gap  = target - get_bno055_yaw();
+    I += gap * dt;
+    D  = (gap - preGap) / dt;
+    preGap = gap;
+    return duty += kp * gap + ki * I + kd * D;
 }
 
-void pid_compute()
-{
-    Input = get_bno055_yaw();
-    myPID.Compute();
-    pidOutput = Output;
-}

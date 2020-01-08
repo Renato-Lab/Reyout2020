@@ -12,27 +12,33 @@ void tof_setup()
   {
     pinMode(XSHUT[i], OUTPUT);
     digitalWrite(XSHUT[i], LOW);
+    Serial.print(i);
+    Serial.println("  off");
   }
 
   for (int i = 0; i < SENSOR_NUM; i++) {
 
     pinMode(XSHUT[i], INPUT);// センサを初期化
+
+    //Serial.print("XSHUT");
+    //Serial.print(i);
+    //Serial.println("INPUT");
     
-    if (tof[i].init() == true)
-    {
+    if (tof[i].init() == true){
+      Serial.print(i);
+      Serial.println("  true");
       tof[i].setTimeout(500);
       tof[i].setDistanceMode(VL53L1X::Long);
       tof[i].setMeasurementTimingBudget(50000);
       tof[i].startContinuous(50);
       int address = ADDRESS_00 + (i * 2);
       tof[i].setAddress(address);
-    }
-    else
-    {
+    }else{
       Serial.print("Sensor ");
       Serial.print(i);
       Serial.println(" error");
     }
+    delay(50);
   }
   Serial.println("tof setup success!!");
 }

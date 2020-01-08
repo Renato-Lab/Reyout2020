@@ -12,15 +12,10 @@ float ball_tracking_dir(float X,float Y)
     float dir = atan2(X,Y);
     dir = dir * 180/PI;
 
-    if (dir < -20) {
+    if (dir < 0) {
         move_dir = -(a + b * abs(dir) + c * abs(dis) + d * (dir * dir) + e * abs(dir) * abs(dis) + f * (dis * dis));
-        escF.write(0);
-    } else if (dir > 20) {
+    } else if (dir > 0) {
         move_dir = a + b * abs(dir) + c * abs(dis) + d * (dir * dir) + e * abs(dir) * abs(dis) + f * (dis * dis);
-        escF.write(0);
-    }else{
-        move_dir = dir;
-        escF.write(1800);
     }
     return move_dir;
 }

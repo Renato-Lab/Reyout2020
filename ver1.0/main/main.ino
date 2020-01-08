@@ -6,80 +6,145 @@
 #include <utility/imumaths.h>
 #include <PID_v1.h>
 
-Servo escF;
-Servo escB;
-
 bool isGAME_START = false; 
 
 #define HOLD_F 22
 #define HOLD_B 23
-bool isHOLD_F;
-bool isHOLD_B;
+bool isHOLD_F = false;
+bool isHOLD_B = false;
 
-bool isBLUE_GOAl = true;
-bool isYELLOW_GOAL = false;
+Servo escF;
+Servo escB;
 
-int ballX,ballY,ballQty,highByte_ballX,lowByte_ballX,highByte_ballY,lowByte_ballY,highByte_qty_ball,lowByte_qty_ball;
-int blueGoalX,blueGoalY,blueGoalQty,highByte_blueGoalX,lowByte_blueGoalX,highByte_blueGoalY,lowByte_blueGoalY,highByte_qty_blue_goal,lowByte_qty_blue_goal;
-int yellowGoalX,yellowGoalY,yellowGoalQty,highByte_yellowGoalX,lowByte_yellowGoalX,highByte_yellowGoalY,lowByte_yellowGoalY,highByte_qty_yellow_goal,lowByte_qty_yellow_goal;
-float fixedBallX, fixedBallY, fixedBlueGoalX,fixedBlueGoalY,fixedYellowGoalX, fixedYellowGoalY, fixedDistance,move_dir;
+#define SW1 6
+#define SW2 13
+
+bool isBLUE_GOAl = false;
+bool isYELLOW_GOAL = true;
+
+int ballX, ballY, highByte_ballX, lowByte_ballX, highByte_ballY, lowByte_ballY;
+int blueX, blueY, highByte_blueX, lowByte_blueX, highByte_blueY, lowByte_blueY;
+int yellowX, yellowY, highByte_yellowX, lowByte_yellowX, highByte_yellowY, lowByte_yellowY;
+float fBallX, fBallY, fBallDis, fBallDir, fBlueX, fBlueY, fBlueDis, fBlueDir, fYellowX, fYellowY, fYellowDis, fYellowDir, move_dir;
 #define CENTER_CAMERA_X 160
 #define CENTER_CAMERA_Y 120
 
-float a = 28.59776;
-float b = 1.41069;
-float c = -0.86659;
-float d = -0.00139;
-float e = -0.00138;
-float f = 0.00578;
+int mPower = 90;
 
-int motorPower = 70;
-
-void setup()
-{
+void setup(){
   Serial.begin(115200);
   Serial1.begin(115200);
   Wire.begin();
-  Wire.setClock(400000); // use 400 kHz I2C
+  //Wire.setClock(400000); // use 400 kHz I2C
 
-  pinMode(6,INPUT);
-  pinMode(13,INPUT);
+  pinMode(SW1,INPUT);
+  pinMode(SW2,OUTPUT);
 
   motor_pin_define();
   esc_setup();
-  //tof_setup();
-  //bno055_setup();
+  kicker_setup();
+  tof_setup();
+  bno055_setup();
   
 }
 
 void loop(){
   
-  //get_camera_data();
-  //check_hold();
+  get_cam_data();
+  calc_cam_data();
+  check_hold();
 
   //print_camera_data();
-  //float dis = sqrt(fixedBallX * fixedBallX + fixedBallY * fixedBallY);
-  //fixedDistance = 0.01638*(dis*dis) - 1.2726*dis + 34.105;
-  //float dir = atan2(fixedBallX,fixedBallY);
-  //dir = dir * 180/PI;
 
-  if(digitalRead(6) == HIGH){
-    Serial.println("HIGH");
-    /*if (ballX == 0 && ballY == 0){
+  if(digitalRead(SW1) == HIGH){
+    if(ballX == 0 && ballY == 0){
+      motor_set(0,0,0);
+      escF.write(1000);
+      escB.write(1000);
+    }else{
+      if(isBLUE_GOAl){
+        if(isHOLD_F){
+          escF.write(2000);
+          if(fBlueDis < 50){
+            kick();
+          }else{
+            motor_set(mPower,fBlueDir,get_bno055_yaw());
+          }
+        }else if(isHOLD_B){
+          escB.write(2000);
+          if(fBlueDis < 20){
+            japan();
+          }else{
+            motor_set(mPower,fBlueDir,get_bno055_yaw());
+          }
+        }else{//青攻めでホールドしてないとき
+          if(abs(fBallDir) < 80 ){
+            escF.write(2000);
+            motor_set(mPower,ball_tracking_dir(fBallX,fBallY),get_bno055_yaw());
+          }else if(abs(fBallDir) < 60){
+            motor_set(mPower,ball_tracking_dir(fBallX,fBallY),fBallDir);
+          }else{
+            motor_set(mPower,ball_tracking_dir(fBallX,fBallY),get_bno055_yaw());
+          }
+        }
+      }else if(isYELLOW_GOAL){
+        if(isHOLD_F){
+          escF.write(2000);
+          if(fYellowDis < 50){
+            kick();
+          }else{
+            motor_set(mPower,fYellowDir,get_bno055_yaw());
+          }
+        }else if(isHOLD_B){
+          escB.write(2000);
+          if(fYellowDis < 20){
+            japan();
+          }else{
+            motor_set(mPower,fYellowDir,get_bno055_yaw());
+          }
+        }else{//青攻めでホールドしてないとき
+          if(abs(fBallDir) < 80 ){
+            escF.write(2000);
+            motor_set(mPower,ball_tracking_dir(fBallX,fBallY),get_bno055_yaw());
+          }else if(abs(fBallDir) < 60){
+            motor_set(mPower,ball_tracking_dir(fBallX,fBallY),fBallDir);
+          }else{
+            motor_set(mPower,ball_tracking_dir(fBallX,fBallY),get_bno055_yaw());
+          }
+        }
+      }
+    }
+  }else if(digitalRead(SW1) == LOW){
+    motor_set(0,0,0);
+    escF.write(1000);
+    escB.write(1000);
+  }
+
+  /*if(digitalRead(SW1) == HIGH){
+    if (ballX == 0 && ballY == 0){
       motor_set(0,0,0);
     }else if(isHOLD_F == true && isBLUE_GOAl == true){//青ゴール攻め、前でホールド
-      motor_set(motorPower,ball_tracking_dir(fixedBlueGoalX,fixedBlueGoalY),0);
+      motor_set(motorPower,ball_tracking_dir(fBlueX, fBlueY),0);
+      kick(0);
     }else if(isHOLD_F == true && isYELLOW_GOAL == true){//黄ゴール攻め、前でホールド
-      motor_set(motorPower,ball_tracking_dir(fixedYellowGoalX,fixedYellowGoalY),0);
+      motor_set(motorPower,ball_tracking_dir(fYellowX, fYellowY),0);
     }else if(isHOLD_B == true && isBLUE_GOAl == true){//青ゴール攻め、後ろでホールド
       //makao-shot
     }else if(isHOLD_B == true && isYELLOW_GOAL == true){//黄ゴール攻め、後ろでホールド
       //makao-shoot
     }else{
-      motor_set(motorPower,ball_tracking_dir(fixedBallX,fixedBallY),0);
-    }*/
-  }else if (digitalRead(6) == LOW){
-    //motor_set(0,0,0);
-    Serial.println("LOW");
-  }
+      motor_set(motorPower,ball_tracking_dir(fBallX, fBallY),0);
+    }
+  }else if (digitalRead(SW1) == LOW){
+    motor_set(0,0,0);
+  }*/
 }
+
+/*
+考慮すべき条件
+攻め方向
+ボールの角度と距離→ドリブラーの発動と方位修正のターゲット
+ゴールの角度と距離→キックのタイミングと向き
+ホールドされているか
+
+*/

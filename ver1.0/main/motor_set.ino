@@ -38,23 +38,20 @@ void motor_pin_define()
   pinMode(M4_dir, OUTPUT);
 }
 
-void motor_set(int power, float move_dir, float initial_dir)
-{
-
+void motor_set(int power, float move_dir, float target){
+  
   if (move_dir < 0) {
     move_dir = move_dir + 360;
   }
 
   power = map(power,0,100,0,255);
 
-  float yaw = get_bno055_yaw();
-  yaw = yaw * 0.006;
-  //Serial.println(yaw);
+  float correct_dir = target * 0.015;
 
-  float M1_power = (sin((move_dir - 45) * PI / 180) - yaw);
-  float M2_power = (sin((move_dir - 135) * PI / 180) - yaw);
-  float M3_power = (sin((move_dir - 225) * PI / 180) - yaw);
-  float M4_power = (sin((move_dir - 315) * PI / 180) - yaw);
+  float M1_power = (sin((move_dir - 45) * PI / 180) - correct_dir);
+  float M2_power = (sin((move_dir - 135) * PI / 180) - correct_dir);
+  float M3_power = (sin((move_dir - 225) * PI / 180) - correct_dir);
+  float M4_power = (sin((move_dir - 315) * PI / 180) - correct_dir);
 
   float prepreMax =max(M1_power,M2_power);
   float preMax = max(prepreMax,M3_power);
