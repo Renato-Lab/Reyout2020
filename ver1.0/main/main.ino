@@ -19,17 +19,17 @@ Servo escB;
 #define SW1 6
 #define SW2 13
 
-bool isBLUE_GOAl = false;
-bool isYELLOW_GOAL = true;
+bool isBLUE_GOAl = true;
+bool isYELLOW_GOAL = false;
 
 int ballX, ballY, highByte_ballX, lowByte_ballX, highByte_ballY, lowByte_ballY;
 int blueX, blueY, highByte_blueX, lowByte_blueX, highByte_blueY, lowByte_blueY;
 int yellowX, yellowY, highByte_yellowX, lowByte_yellowX, highByte_yellowY, lowByte_yellowY;
 float fBallX, fBallY, fBallDis, fBallDir, fBlueX, fBlueY, fBlueDis, fBlueDir, fYellowX, fYellowY, fYellowDis, fYellowDir, move_dir;
 #define CENTER_CAMERA_X 160
-#define CENTER_CAMERA_Y 120
+#define CENTER_CAMERA_Y 130
 
-int mPower = 90;
+int mPower = 100;
 
 void setup(){
   Serial.begin(115200);
@@ -45,7 +45,10 @@ void setup(){
   kicker_setup();
   tof_setup();
   bno055_setup();
-  
+  digitalWrite(SW2,HIGH);
+  delay(200);
+  digitalWrite(SW2,LOW);
+  delay(200);
 }
 
 void loop(){
@@ -53,36 +56,100 @@ void loop(){
   get_cam_data();
   calc_cam_data();
   check_hold();
+  check_line();
 
   //print_camera_data();
 
   if(digitalRead(SW1) == HIGH){
+    if(isBLUE_GOAl){
+      if(isHOLD_F){
+        escF.write(2000);
+          if(fBlueDis < 100){
+            kick();
+          }else{
+            motor_set(mPower,ball_tracking_dir(fBlueX, fBlueY),get_bno055_yaw());
+          }
+      }else if(isHOLD_B){
+        motor_set(mPower, 0, get_bno055_yaw());
+        /*escB.write(2000);
+        if(fBlueDis < 100){
+          japan();
+        }else{
+          motor_set(mPower,ball_tracking_dir(fBlueX, fBlueY),get_bno055_yaw());
+        }*/
+      }else{
+        if(ballX == 0 && ballY == 0){
+          motor_set(0,0,0);
+        }else{
+          if(abs(fBallDir) < 10){
+            motor_set(mPower,fBallDir * 1.8,get_bno055_yaw());
+          }else{
+            motor_set(mPower,ball_tracking_dir(fBallX,fBallY),get_bno055_yaw());
+          }
+        }
+      }
+    }else if(isYELLOW_GOAL){
+      if(isHOLD_F){
+        escF.write(2000);
+          if(fYellowDis < 100){
+            kick();
+          }else{
+            motor_set(mPower,ball_tracking_dir(fYellowX, fYellowY),get_bno055_yaw());
+          }
+      }else if(isHOLD_B){
+        motor_set(mPower, 0, get_bno055_yaw());
+        /*escB.write(2000);
+        if(fYellowDis < 100){
+          japan();
+        }else{
+          motor_set(mPower,ball_tracking_dir(fYellowX, fYellowY),get_bno055_yaw());
+        }*/
+      }else{
+        if(ballX == 0 && ballY == 0){
+          motor_set(0,0,0);
+        }else{
+          if(abs(fBallDir) < 10){
+            motor_set(mPower,fBallDir * 1.8,get_bno055_yaw());
+          }else{
+            motor_set(mPower,ball_tracking_dir(fBallX,fBallY),get_bno055_yaw());
+          }
+        }
+      }
+    }
+  }else if(digitalRead(SW1) == LOW){
+    motor_set(0,0,0);
+    escF.write(1000);
+  }
+
+
+  /*if(digitalRead(SW1) == HIGH){
+    escF.write(2000);
     if(ballX == 0 && ballY == 0){
       motor_set(0,0,0);
-      escF.write(1000);
-      escB.write(1000);
+      escF.write(1100);
+      escB.write(1100);
     }else{
       if(isBLUE_GOAl){
         if(isHOLD_F){
           escF.write(2000);
-          if(fBlueDis < 50){
+          if(fBlueDis < 60){
             kick();
           }else{
-            motor_set(mPower,fBlueDir,get_bno055_yaw());
+            motor_set(mPower,ball_tracking_dir(fBlueX, fBlueY),get_bno055_yaw());
           }
         }else if(isHOLD_B){
           escB.write(2000);
           if(fBlueDis < 20){
             japan();
           }else{
-            motor_set(mPower,fBlueDir,get_bno055_yaw());
+            motor_set(mPower,0,get_bno055_yaw());
           }
         }else{//青攻めでホールドしてないとき
           if(abs(fBallDir) < 80 ){
             escF.write(2000);
             motor_set(mPower,ball_tracking_dir(fBallX,fBallY),get_bno055_yaw());
-          }else if(abs(fBallDir) < 60){
-            motor_set(mPower,ball_tracking_dir(fBallX,fBallY),fBallDir);
+          }else if(abs(fBallDir) < 10){
+            motor_set(mPower * 0.8,0,get_bno055_yaw());
           }else{
             motor_set(mPower,ball_tracking_dir(fBallX,fBallY),get_bno055_yaw());
           }
@@ -118,7 +185,7 @@ void loop(){
     motor_set(0,0,0);
     escF.write(1000);
     escB.write(1000);
-  }
+  }*/
 
   /*if(digitalRead(SW1) == HIGH){
     if (ballX == 0 && ballY == 0){

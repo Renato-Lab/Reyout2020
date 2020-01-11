@@ -46,7 +46,7 @@ void motor_set(int power, float move_dir, float target){
 
   power = map(power,0,100,0,255);
 
-  float correct_dir = target * 0.015;
+  float correct_dir = target * 0.006;
 
   float M1_power = (sin((move_dir - 45) * PI / 180) - correct_dir);
   float M2_power = (sin((move_dir - 135) * PI / 180) - correct_dir);
@@ -114,4 +114,15 @@ void motor_set(int power, float move_dir, float target){
   Serial.print("\t");
   Serial.print(M4_power);
   Serial.println("\t");*/
+}
+
+void right_round(){
+  digitalWrite(M1_dir, LOW);
+  analogWrite(M1_pwm, 100);
+  digitalWrite(M2_dir, LOW);
+  analogWrite(M2_pwm, 100);
+  digitalWrite(M3_dir, LOW);
+  analogWrite(M3_pwm, 100);
+  digitalWrite(M4_dir, LOW);
+  analogWrite(M4_pwm, 100);
 }

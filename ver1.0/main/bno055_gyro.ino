@@ -8,6 +8,14 @@ void bno055_setup()
     /* Initialise the sensor */
     if (!bno.begin())
     {
+        for(int i = 0;i < 5; i++){
+            digitalWrite(SW2,HIGH);
+            delay(100);
+            digitalWrite(SW2,LOW);
+            delay(100);
+        }
+        
+  
         /* There was a problem detecting the BNO055 ... check your connections */
         Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
         while (1);

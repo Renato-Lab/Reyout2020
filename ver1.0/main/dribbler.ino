@@ -7,10 +7,10 @@ void esc_setup(){
 
      escF.write(2000);
      escB.write(2000);
-     delay(1200);
+     delay(1300);
      escF.write(1000);
      escB.write(1000);
-     delay(1200);
+     delay(1300);
      Serial.println("esc setup succeded!!");
 
 }
@@ -66,9 +66,9 @@ void kick(){
 void japan(){
      if(isBLUE_GOAl){
           if(fBlueDir < 0){
-               //migikaitenn
+               right_round();
           }else if(fBlueDir > 0){
-               //hidarikaitenn
+               right_round();
           }
      }else if(isYELLOW_GOAL){
           if(fYellowDir < 0){

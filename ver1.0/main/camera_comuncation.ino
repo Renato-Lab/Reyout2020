@@ -60,16 +60,28 @@ void calc_cam_data(){
 }
 
 void print_camera_data(){
-  Serial.print(ballX);
+  Serial.print(fBallX);
   Serial.print("\t");
-  Serial.print(ballY);
+  Serial.print(fBallY);
   Serial.print("\t");
-  Serial.print(blueX);
+  Serial.print(fBallDir);
   Serial.print("\t");
-  Serial.print(blueY);
+  Serial.print(fBallDis);
   Serial.print("\t");
-  Serial.print(yellowX);
+  Serial.print(fBlueX);
   Serial.print("\t");
-  Serial.print(yellowY);
+  Serial.print(fBlueY);
+  Serial.print("\t");
+  Serial.print(fBlueDir);
+  Serial.print("\t");
+  Serial.print(fBlueDis);
+  Serial.print("\t");
+  Serial.print(fYellowX);
+  Serial.print("\t");
+  Serial.print(fYellowY);
   Serial.println("\t");
+  Serial.print(fYellowDir);
+  Serial.print("\t");
+  Serial.print(fYellowDis);
+  Serial.print("\t");
 }

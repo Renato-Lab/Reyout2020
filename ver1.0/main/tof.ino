@@ -20,9 +20,13 @@ void tof_setup()
 
     pinMode(XSHUT[i], INPUT);// センサを初期化
 
-    //Serial.print("XSHUT");
-    //Serial.print(i);
-    //Serial.println("INPUT");
+    Serial.print("XSHUT");
+    Serial.print(i);
+    Serial.println("INPUT");
+    //digitalWrite(SW2,HIGH);
+    //delay(500);
+    
+    
     
     if (tof[i].init() == true){
       Serial.print(i);
@@ -38,8 +42,9 @@ void tof_setup()
       Serial.print(i);
       Serial.println(" error");
     }
-    delay(50);
-  }
+    //digitalWrite(SW2,LOW);
+    //delay(500);
+    }
   Serial.println("tof setup success!!");
 }
 
