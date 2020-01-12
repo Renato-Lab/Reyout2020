@@ -28,17 +28,14 @@ void kick(){
                delay(100);
                digitalWrite(KICKER_R,LOW);
                digitalWrite(KICKER_L,LOW);
-               delay(500);
           }else if(fBlueDir < -10){
                digitalWrite(KICKER_R,HIGH);
                delay(100);
                digitalWrite(KICKER_R,LOW);
-               delay(500);
           }else if(fBlueDir > 10){
                digitalWrite(KICKER_L,HIGH);
                delay(100);
                digitalWrite(KICKER_L,LOW);
-               delay(500);
           }
      }else if(isYELLOW_GOAL){
           if(fYellowDir < 10 && fYellowDir > -10){
@@ -47,17 +44,14 @@ void kick(){
                delay(100);
                digitalWrite(KICKER_R,LOW);
                digitalWrite(KICKER_L,LOW);
-               delay(500);
           }else if(fYellowDir < -10){
                digitalWrite(KICKER_R,HIGH);
                delay(100);
                digitalWrite(KICKER_R,LOW);
-               delay(500);
           }else if(fYellowDir > 10){
                digitalWrite(KICKER_L,HIGH);
                delay(100);
                digitalWrite(KICKER_L,LOW);
-               delay(500);
           }
      }
      
